@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::create('dashboard_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dashboard_id')->constrained()->onDelete('cascade');
@@ -19,13 +18,14 @@ return new class extends Migration
             
             $table->unique(['dashboard_id', 'user_id']);
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('dashboard_user');
+        Schema::enableForeignKeyConstraints();
     }
 };

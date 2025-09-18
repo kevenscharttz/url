@@ -23,12 +23,35 @@ class OrganizationResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(100),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
+                Forms\Components\Section::make('Informações da Organização')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(100),
+                        Forms\Components\Textarea::make('description')
+                            ->maxLength(65535)
+                            ->columnSpanFull(),
+                    ]),
+                
+                Forms\Components\Section::make('Vínculos')
+                    ->schema([
+                        Forms\Components\Select::make('users')
+                            ->relationship('users', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
+                    ])
+                    ->visible(fn ($operation) => $operation === 'create')
+                    ->columns(1),
             ]);
     }
 

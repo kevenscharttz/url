@@ -6,29 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('dashboards', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('platform', ["powerbi","metabase"]);
+            $table->enum('platform', ['powerbi','metabase']);
             $table->text('url');
-            $table->enum('visibility', ["public","private"])->default('private');
-            $table->enum('scope', ["organization","profile","user"]);
+            $table->enum('visibility', ['public','private'])->default('private');
+            $table->enum('scope', ['organization','profile','user']);
             $table->json('tags')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('dashboards');
+        Schema::enableForeignKeyConstraints();
     }
 };

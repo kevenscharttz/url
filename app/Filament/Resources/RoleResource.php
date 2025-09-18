@@ -23,18 +23,41 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(50),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('scope')
-                    ->options([
-                        'global' => 'Global',
-                        'organization' => 'Organização',
+                Forms\Components\Section::make('Informações do Perfil')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(50),
+                        Forms\Components\Textarea::make('description')
+                            ->maxLength(65535)
+                            ->columnSpanFull(),
+                        Forms\Components\Select::make('scope')
+                            ->options([
+                                'global' => 'Global',
+                                'organization' => 'Organização',
+                            ])
+                            ->required(),
+                    ]),
+                
+                Forms\Components\Section::make('Vínculos')
+                    ->schema([
+                        Forms\Components\Select::make('users')
+                            ->relationship('users', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
+                        Forms\Components\Select::make('organizations')
+                            ->relationship('organizations', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
                     ])
-                    ->required(),
+                    ->visible(fn ($operation) => $operation === 'create')
+                    ->columns(1),
             ]);
     }
 

@@ -23,36 +23,67 @@ class DashboardResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('platform')
-                    ->options([
-                        'powerbi' => 'Power BI',
-                        'metabase' => 'Metabase',
+                Forms\Components\Section::make('Informações do Dashboard')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('description')
+                            ->maxLength(65535)
+                            ->columnSpanFull(),
+                        Forms\Components\Select::make('platform')
+                            ->options([
+                                'powerbi' => 'Power BI',
+                                'metabase' => 'Metabase',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('url')
+                            ->url()
+                            ->required()
+                            ->maxLength(65535),
+                        Forms\Components\Select::make('visibility')
+                            ->options([
+                                'public' => 'Público',
+                                'private' => 'Privado',
+                            ])
+                            ->required(),
+                        Forms\Components\Select::make('scope')
+                            ->options([
+                                'organization' => 'Organização',
+                                'profile' => 'Perfil',
+                                'user' => 'Usuário',
+                            ])
+                            ->required(),
+                        Forms\Components\TagsInput::make('tags'),
                     ])
-                    ->required(),
-                Forms\Components\TextInput::make('url')
-                    ->url()
-                    ->required()
-                    ->maxLength(65535),
-                Forms\Components\Select::make('visibility')
-                    ->options([
-                        'public' => 'Público',
-                        'private' => 'Privado',
+                    ->columns(2),
+                
+                Forms\Components\Section::make('Acesso ao Dashboard')
+                    ->schema([
+                        Forms\Components\Select::make('organizations')
+                            ->relationship('organizations', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
+                        Forms\Components\Select::make('users')
+                            ->relationship('users', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->dehydrated()
+                            ->visible(fn ($operation) => $operation === 'create'),
                     ])
-                    ->required(),
-                Forms\Components\Select::make('scope')
-                    ->options([
-                        'organization' => 'Organização',
-                        'profile' => 'Perfil',
-                        'user' => 'Usuário',
-                    ])
-                    ->required(),
-                Forms\Components\TagsInput::make('tags'),
+                    ->visible(fn ($operation) => $operation === 'create')
+                    ->columns(1),
             ]);
     }
 
@@ -105,8 +136,12 @@ class DashboardResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('view')
+                    ->label('Visualizar')
+                    ->url(fn (Dashboard $record) => \App\Filament\Pages\ViewDashboard::getUrl(['dashboard' => $record->id]))
+                    ->icon('heroicon-o-eye')
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
