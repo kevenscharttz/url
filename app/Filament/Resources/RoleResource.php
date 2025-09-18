@@ -78,9 +78,9 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //RelationManagers\UsersRelationManager::class,
-            //RelationManagers\OrganizationsRelationManager::class,
-            //RelationManagers\DashboardsRelationManager::class,
+            RelationManagers\UsersRelationManager::class,
+            RelationManagers\OrganizationsRelationManager::class,
+            RelationManagers\DashboardsRelationManager::class,
         ];
     }
 
