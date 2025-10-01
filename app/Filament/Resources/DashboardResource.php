@@ -57,7 +57,7 @@ class DashboardResource extends Resource
                         Forms\Components\TagsInput::make('tags'),
                     ])
                     ->columns(2),
-                
+
                 Forms\Components\Section::make('Acesso ao Dashboard')
                     ->schema([
                         Forms\Components\Select::make('organizations')
@@ -112,6 +112,8 @@ class DashboardResource extends Resource
                         'profile' => 'info',
                         'user' => 'gray',
                     }),
+                Tables\Columns\TagsColumn::make('tags')
+                    ->separator(','),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -134,11 +136,17 @@ class DashboardResource extends Resource
                         'profile' => 'Perfil',
                         'user' => 'Usuário',
                     ]),
+                Tables\Filters\SelectFilter::make('organization')
+                    ->label('Organização')
+                    ->relationship('organizations', 'name'),
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Perfil')
+                    ->relationship('roles', 'name'),
             ])
             ->actions([
                 Tables\Actions\Action::make('view')
                     ->label('Visualizar')
-                    ->url(fn (Dashboard $record) => \App\Filament\Pages\ViewDashboard::getUrl(['dashboard' => $record->id]))
+                    ->url(fn (Dashboard $record) => Pages\ViewDashboard::getUrl(['record' => $record->id]))
                     ->icon('heroicon-o-eye')
                     ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
@@ -166,6 +174,7 @@ class DashboardResource extends Resource
             'index' => Pages\ListDashboards::route('/'),
             'create' => Pages\CreateDashboard::route('/create'),
             'edit' => Pages\EditDashboard::route('/{record}/edit'),
+            'view' => Pages\ViewDashboard::route('/{record}/view'),
         ];
     }
 }

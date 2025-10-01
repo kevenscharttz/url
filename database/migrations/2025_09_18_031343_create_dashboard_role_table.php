@@ -15,7 +15,8 @@ return new class extends Migration
             $table->foreignId('dashboard_id')->constrained()->onDelete('cascade');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
+            // Garante que só exista 1 dashboard por perfil
+            $table->unique(['role_id']);
             $table->unique(['dashboard_id', 'role_id']);
         });
 

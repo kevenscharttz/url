@@ -15,7 +15,8 @@ return new class extends Migration
             $table->foreignId('dashboard_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
+            // Garante que só exista 1 dashboard por usuário
+            $table->unique(['user_id']);
             $table->unique(['dashboard_id', 'user_id']);
         });
 
