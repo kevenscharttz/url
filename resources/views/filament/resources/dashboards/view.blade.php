@@ -83,7 +83,8 @@
                 x-on:load="loaded = true"
                 allow="fullscreen"
             ></iframe>
-        </div>
+        </div>     
+        
 
         <!-- INFORMAÇÕES RODAPÉ -->
         <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
